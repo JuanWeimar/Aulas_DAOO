@@ -1,0 +1,13 @@
+<table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CNPJ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{$slot}}
+        </tbody>
+</table>

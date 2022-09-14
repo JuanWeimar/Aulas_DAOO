@@ -1,0 +1,15 @@
+<table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>CPF</th>
+                <th>Curriculo</th>
+                <th>Competencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{$slot}}
+        </tbody>
+</table>
