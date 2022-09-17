@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CandidatoController;
 use App\Http\Controllers\Api\EmpresaController;
 use App\Http\Controllers\Api\VagaController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\LoginController;
 
 
 
@@ -20,25 +22,48 @@ use App\Http\Controllers\Api\VagaController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    Route::get('empresas/{id}/vagas', [EmpresaController::class, 'vagas'])
+        ->name('empresas.vagas');
+
+    Route::apiResource('vagas', VagaController::class)
+        ->parameters([
+            'vagas' => 'vaga'
+        ]);
+
+    Route::get('/candidato/{id}', [CandidatoController::class, 'show']);
+
+    Route::get('empresas/{id}', [EmpresaController::class, 'show']);
+
+    Route::group(['middleware'=>['ability:is_admin']],function(){
+        Route::post('empresas', [
+            EmpresaController::class, 'store'
+        ]);
+        Route::put('empresas/{id}', [
+            EmpresaController::class, 'update'
+        ]);
+        Route::delete('empresas/{id}', [
+            FornecedorController::class, 'delete'
+        ]);
+        Route::post('/candidato', [CandidatoController::class, 'store']);
+        Route::put('/candidatos/{id}', [CandidatoController::class, 'update']);
+        Route::delete('/candidatos/{id}', [CandidatoController::class, 'destroy']);
+    });
+    
+  
+});
+Route::apiResource('usuarios', UserController::class)
+        ->parameters([
+            'usuarios' => 'usuario'
+        ]);
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/empresas', [EmpresaController::class, 'index']);
 Route::get('/candidatos', [CandidatoController::class, 'index']);
-Route::get('/candidato/{id}', [CandidatoController::class, 'show']);
-Route::post('/candidato', [CandidatoController::class, 'store']);
-Route::put('/candidatos/{id}', [CandidatoController::class, 'update']);
-Route::delete('/candidatos/{id}', [CandidatoController::class, 'destroy']);
-
-Route::apiResource('empresas', EmpresaController::class)
-    ->parameters([
-        'empresas' => 'empresa'
-    ]);
-
-Route::apiResource('vagas', VagaController::class)
-    ->parameters([
-        'vagas' => 'vaga'
-    ]);
-
-Route::get('empresas/{id}/vagas', [EmpresaController::class, 'vagas'])
-    ->name('empresas.vagas');
-//Route::get('/empresas', [EmpresaController::class, 'index']);

@@ -33,12 +33,18 @@ class EmpresaController extends Controller
     public function store(Request $request)
     {
         try {
-            $newEmpresa = $request->all();
-            $storedEmpresa = Empresa::create($newEmpresa);
-            return response()->json([
-                'msg' => 'Empresa inserida com sucesso!',
-                'empresa' =>$storedEmpresa
-            ]);
+            if(!$request->user()->tokenCan('is_admin')){
+                $statusHttp = 403;
+                throw new Exception("Nao autorizado");
+            }
+            else{
+                $newEmpresa = $request->all();
+                $storedEmpresa = Empresa::create($newEmpresa);
+                return response()->json([
+                    'msg' => 'Empresa inserida com sucesso!',
+                    'empresa' =>$storedEmpresa
+                ]);
+            };
         } catch (\Exception $error) {
             $responseError = [
                 'Erro' => 'Erro ao inserir nova empresa',
